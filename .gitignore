@@ -1,1 +1,17 @@
 Fetal Abdominal Structures Segmentation Dataset Using Ultrasonic Images (1)-20260414T100044Z-3-003/
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Runtime data and generated files
+backend/uploads/
+backend/*.db
+**/__pycache__/
+*.py[cod]
+frontend/node_modules/
+frontend/dist/
