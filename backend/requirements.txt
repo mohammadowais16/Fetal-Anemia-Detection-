@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+SQLAlchemy
+python-dotenv
+google-generativeai
+tensorflow
+numpy
+opencv-python-headless
