@@ -4,7 +4,7 @@ GeoProteoNet is a student project exploring Doppler ultrasound image analysis wi
 
 > Final-year B.E. major project at MJCET (2026), supervised by Ms. Nabeela Fatima.
 
-**Research prototype only.** This project is not a medical device and must not be used to diagnose, treat, or make clinical decisions. The reported metrics below are experimental results from the project, not evidence of clinical validation.
+**Research prototype only.** This project is not a medical device and must not be used to diagnose, treat, or make clinical decisions. The reported metrics below are experimental results from the project, not evidence of clinical validation. The current API is a student prototype and does not provide production-grade authentication or authorization; do not expose it publicly or use real patient data.
 
 ## Overview
 
@@ -45,7 +45,7 @@ cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-On Windows, you can copy these files in File Explorer or use PowerShell's `Copy-Item` command. Add your own Gemini key to `backend/.env` if you need the optional Gemini integration. Frontend `VITE_*` values are delivered to the browser, so never put private credentials in them.
+On Windows, you can copy these files in File Explorer or use PowerShell's `Copy-Item` command. Add your own Gemini key to `backend/.env` if you need the optional Gemini integration. Set `FRONTEND_ORIGINS` to a comma-separated list of trusted frontend origins when deploying. Frontend `VITE_*` values are delivered to the browser, so never put private credentials in them.
 
 ### 2. Start the backend
 
