@@ -1,71 +1,82 @@
 # GeoProteoNet — Fetal Anemia Detection
 
-GeoProteoNet is a student project exploring how Doppler ultrasound images and machine learning can support research into fetal anemia assessment. It combines image segmentation, hemodynamic feature extraction, and a web dashboard for reviewing analysis results.
+GeoProteoNet is a student project exploring Doppler ultrasound image analysis with computer vision and machine learning. It combines image-based model inference, derived hemodynamic features, and a web dashboard for reviewing results.
 
 > Final-year B.E. major project at MJCET (2026), supervised by Ms. Nabeela Fatima.
 
-**Important:** This is an academic prototype, not a medical device. It must not be used to diagnose, treat, or make clinical decisions. The reported model metrics describe the project's evaluation setup and are not evidence of clinical validation.
+**Research prototype only.** This project is not a medical device and must not be used to diagnose, treat, or make clinical decisions. The reported metrics below are experimental results from the project, not evidence of clinical validation.
 
-## How it works
+## Overview
 
-1. **Image segmentation** — a CNN encoder-decoder identifies relevant structures in Doppler ultrasound images.
-2. **Feature extraction** — the pipeline derives hemodynamic features such as PSV, EDV, RI, PI, and S/D ratio.
-3. **Risk classification** — a Random Forest model uses extracted features to produce a model prediction.
-4. **Results dashboard** — a React interface displays analysis results, visualizations, history, and PDF exports.
+1. **Image analysis** — a TensorFlow/Keras CNN processes an uploaded image.
+2. **Feature generation** — the pipeline prepares hemodynamic values such as PSV, EDV, RI, PI, and S/D ratio.
+3. **Results dashboard** — a React interface presents the analysis, history, visualizations, and PDF exports.
 
 ## Architecture
 
-![System Architecture](./architecture.png)
+![Project architecture](./architecture.png)
 
-| Component | Role |
+| Area | Technologies |
 | --- | --- |
-| Frontend | React, Vite, Tailwind CSS, Recharts, and PDF report export |
-| Backend | FastAPI endpoints and image preprocessing |
-| ML pipeline | CNN-based segmentation, feature extraction, and Random Forest classification |
-| Data layer | Patient records, scan history, and generated reports |
+| Frontend | React, Vite, Tailwind CSS, Recharts |
+| API | Python, FastAPI, Uvicorn |
+| Model and image processing | TensorFlow/Keras, NumPy, OpenCV |
+| Data and reports | SQLAlchemy, SQLite, jsPDF, html2canvas |
 
-## Reported model metrics
+## Reported experimental metrics
 
-The project README reports the following metrics on a held-out split of its labeled ultrasound dataset:
+The earlier project evaluation reported:
 
 - **Segmentation:** 93.99% Dice coefficient
 - **Classification:** 92.90% F1-score
 
-These are project-reported experimental results. They should be interpreted in the context of the dataset, split, and evaluation procedure; they do not establish real-world clinical performance.
-
-## Technology
-
-- **Frontend:** React, Vite, Tailwind CSS, Recharts, Lucide React
-- **Backend:** Python, FastAPI, Uvicorn
-- **Machine learning / computer vision:** TensorFlow/Keras, OpenCV, scikit-learn
-- **Infrastructure:** Docker, GitHub Actions, AWS
-- **Reporting:** jsPDF, html2canvas
-
-## Project structure
-
-```text
-├── backend/            # FastAPI app, inference, and database access
-├── frontend/           # React + Vite dashboard
-├── notebooks/          # Model development and training notebooks
-├── .github/workflows/  # CI workflows
-└── docker/             # Containerization configuration
-```
+These values should be read alongside the dataset, split, labels, and evaluation method used. They have not been independently verified here and do not establish clinical performance or generalization to new populations.
 
 ## Run locally
 
-Run the backend and frontend in separate terminals.
+Use Python 3.11 and a recent Node.js LTS release. The application creates its local SQLite database and uploads directory at runtime; those generated files are intentionally excluded from version control.
 
-### Backend
+### 1. Configure local environment files
+
+From the repository root, copy the templates:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+On Windows, you can copy these files in File Explorer or use PowerShell's `Copy-Item` command. Add your own Gemini key to `backend/.env` if you need the optional Gemini integration. Frontend `VITE_*` values are delivered to the browser, so never put private credentials in them.
+
+### 2. Start the backend
 
 ```bash
 cd backend
-pip install -r requirements.txt
-python main.py
+python -m venv .venv
 ```
 
-The backend runs on `http://localhost:8000`.
+Activate the environment, then install dependencies and run the API.
 
-### Frontend
+**Windows (PowerShell):**
+
+```powershell
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+**macOS/Linux:**
+
+```bash
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+The API is available at `http://localhost:8000`; interactive API documentation is at `http://localhost:8000/docs`.
+
+### 3. Start the frontend
+
+In a second terminal:
 
 ```bash
 cd frontend
@@ -73,9 +84,24 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open the local URL printed by Vite (usually `http://localhost:5173`).
 
-The exact setup may depend on the available model files, dataset, and local configuration. If the full dataset is unavailable, the repository's lightweight development path may help test the application flow; it should not be confused with a validated trained model.
+The exact output depends on the available model weights and local configuration. Predictions from this academic prototype must not be interpreted as clinical advice.
+
+## Repository structure
+
+```text
+├── architecture.png
+├── backend/
+│   ├── main.py
+│   ├── model_utils.py
+│   ├── requirements.txt
+│   └── .env.example
+└── frontend/
+    ├── src/
+    ├── package.json
+    └── .env.example
+```
 
 ## Team
 
