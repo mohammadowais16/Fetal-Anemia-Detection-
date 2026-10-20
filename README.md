@@ -1,97 +1,90 @@
-# GeoProteoNet — Fetal Anemia Diagnostic Platform
+# GeoProteoNet — Fetal Anemia Detection
 
-A full-stack clinical decision-support system that analyzes Doppler ultrasound images to assess fetal anemia risk. Built as a two-stage deep learning pipeline — CNN-based segmentation followed by classical ML classification on extracted hemodynamic features — wrapped in a production-style web application with a FastAPI backend and a React clinical dashboard.
+GeoProteoNet is a student project exploring how Doppler ultrasound images and machine learning can support research into fetal anemia assessment. It combines image segmentation, hemodynamic feature extraction, and a web dashboard for reviewing analysis results.
 
-> Final-year B.E. major project, MJCET (2026) — supervised by Ms. Nabeela Fatima.
+> Final-year B.E. major project at MJCET (2026), supervised by Ms. Nabeela Fatima.
 
----
+**Important:** This is an academic prototype, not a medical device. It must not be used to diagnose, treat, or make clinical decisions. The reported model metrics describe the project's evaluation setup and are not evidence of clinical validation.
 
-## Overview
+## How it works
 
-Fetal anemia is typically screened using Doppler ultrasound measurements of the Middle Cerebral Artery (MCA), particularly Peak Systolic Velocity (PSV). Manual measurement is time-consuming and operator-dependent. GeoProteoNet automates this by:
-
-1. **Segmenting** the relevant vascular structures from Doppler ultrasound images using a CNN encoder-decoder
-2. **Extracting** hemodynamic features (PSV, EDV, RI, PI, S/D Ratio) from the segmented output
-3. **Classifying** anemia risk using a Random Forest model trained on those features
-4. **Presenting** results through a clinical dashboard with waveform plots, correlation heatmaps, and exportable PDF reports
+1. **Image segmentation** — a CNN encoder-decoder identifies relevant structures in Doppler ultrasound images.
+2. **Feature extraction** — the pipeline derives hemodynamic features such as PSV, EDV, RI, PI, and S/D ratio.
+3. **Risk classification** — a Random Forest model uses extracted features to produce a model prediction.
+4. **Results dashboard** — a React interface displays analysis results, visualizations, history, and PDF exports.
 
 ## Architecture
 
 ![System Architecture](./architecture.png)
 
-The system is organized into four layers:
+| Component | Role |
+| --- | --- |
+| Frontend | React, Vite, Tailwind CSS, Recharts, and PDF report export |
+| Backend | FastAPI endpoints and image preprocessing |
+| ML pipeline | CNN-based segmentation, feature extraction, and Random Forest classification |
+| Data layer | Patient records, scan history, and generated reports |
 
-| Layer | Description |
-|---|---|
-| **Frontend** (React + Vite) | Dashboard UI for upload/compare/history, Recharts-based data visualization, PDF report export via `html2canvas` + `jsPDF` |
-| **API/Backend** (FastAPI) | REST endpoints for image upload and analysis, Doppler image preprocessing pipeline |
-| **Deep Learning Engine** | CNN encoder-decoder for segmentation, feature extraction, Random Forest classification |
-| **Data Persistence** | Patient records and scan history storage, raw ultrasound + generated report storage |
+## Reported model metrics
 
-## Model Performance
+The project README reports the following metrics on a held-out split of its labeled ultrasound dataset:
 
-Reported on the held-out test split of the labeled ultrasound dataset:
+- **Segmentation:** 93.99% Dice coefficient
+- **Classification:** 92.90% F1-score
 
-- **Segmentation (CNN encoder-decoder):** 93.99% Dice Coefficient
-- **Classification (Random Forest on hemodynamic features):** 92.90% F1-score
+These are project-reported experimental results. They should be interpreted in the context of the dataset, split, and evaluation procedure; they do not establish real-world clinical performance.
 
-## Tech Stack
+## Technology
 
-**Frontend:** React, Vite, Tailwind CSS, Recharts, Lucide React
-**Backend:** Python, FastAPI, Uvicorn
-**ML/CV:** TensorFlow/Keras, OpenCV, Scikit-learn
-**Infra/DevOps:** Docker, GitHub Actions (CI/CD), AWS (EC2, S3, IAM, VPC)
-**Reporting:** jsPDF, html2canvas
+- **Frontend:** React, Vite, Tailwind CSS, Recharts, Lucide React
+- **Backend:** Python, FastAPI, Uvicorn
+- **Machine learning / computer vision:** TensorFlow/Keras, OpenCV, scikit-learn
+- **Infrastructure:** Docker, GitHub Actions, AWS
+- **Reporting:** jsPDF, html2canvas
 
-## Project Structure
+## Project structure
 
+```text
+├── backend/            # FastAPI app, inference, and database access
+├── frontend/           # React + Vite dashboard
+├── notebooks/          # Model development and training notebooks
+├── .github/workflows/  # CI workflows
+└── docker/             # Containerization configuration
 ```
-├── backend/          # FastAPI app, model inference, DB access
-├── frontend/          # React + Vite dashboard
-├── notebooks/         # Model development & training notebooks
-├── .github/workflows/ # CI/CD pipeline definitions
-└── docker/            # Containerization configs
-```
 
-## Running Locally
+## Run locally
 
-You'll need the backend and frontend running simultaneously.
+Run the backend and frontend in separate terminals.
 
 ### Backend
+
 ```bash
 cd backend
 pip install -r requirements.txt
 python main.py
 ```
-Runs on `http://localhost:8000`
+
+The backend runs on `http://localhost:8000`.
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Runs on `http://localhost:5173`
 
-Then open `http://localhost:5173` in your browser.
+Open `http://localhost:5173` in your browser.
 
-> **Note on local/demo mode:** If the full training dataset isn't present locally, the training scripts fall back to a lightweight dummy-data path so the pipeline (data loading → model → weights → backend integration) can still be verified end-to-end without the full dataset. This is intentional for local development and CI smoke-testing, not a substitute for the actual trained weights used to produce the metrics above.
-
-## CI/CD
-
-GitHub Actions runs on every push to validate the build and (where configured) run integration smoke tests against the FastAPI backend.
+The exact setup may depend on the available model files, dataset, and local configuration. If the full dataset is unavailable, the repository's lightweight development path may help test the application flow; it should not be confused with a validated trained model.
 
 ## Team
 
-- **Shaikh Mazein Ahmed**
-- **Mohammad Owais**
-- **Shaik Syed**
+- Shaikh Mazein Ahmed
+- Mohammad Owais
+- Shaik Syed
 
-Supervised by Ms. Nabeela Fatima, Dept. of CSE, MJCET.
-
-<!-- TODO: add a one-line contribution note per person, e.g. "Mazein — backend, deployment, CI/CD" -->
-
+Supervised by Ms. Nabeela Fatima, Department of Computer Science and Engineering, MJCET.
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE](./LICENSE) for details.
+MIT — see [LICENSE](./LICENSE).
