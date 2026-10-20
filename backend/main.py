@@ -36,9 +36,20 @@ UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Allow requests from the React frontend
+# Configure allowed browser origins explicitly. Set FRONTEND_ORIGINS to a
+# comma-separated list when running outside local development.
+FRONTEND_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "FRONTEND_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173",
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -53,9 +64,10 @@ from fastapi.responses import JSONResponse
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"GLOBAL ERROR: {exc}", exc_info=True)
+    # Keep internal exception details in server logs, not in client responses.
     return JSONResponse(
         status_code=500,
-        content={"message": f"Internal Server Error: {str(exc)}"},
+        content={"message": "Internal server error"},
     )
 
 @app.get("/api/patients")
